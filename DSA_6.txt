@@ -1,0 +1,246 @@
+•	Implement Binary search tree and perform following operations: 
+a)	Insert b) Display - Depth of tree c) Display - Mirror image d) Create a copy
+
+
+#include <iostream>
+
+struct TreeNode {
+    int data;
+    TreeNode* left;
+    TreeNode* right;
+
+    TreeNode(int value) : data(value), left(nullptr), right(nullptr) {}
+};
+
+class BinarySearchTree {
+private:
+    TreeNode* root;
+
+public:
+    BinarySearchTree() : root(nullptr) {}
+
+    void insert(int value) {
+        root = insertNode(root, value);
+    }
+
+    int depth() {
+        return calculateDepth(root);
+    }
+
+    void displayMirrorImage() {
+        TreeNode* mirroredRoot = createMirror(root);
+        inOrderTraversal(mirroredRoot);
+        std::cout << std::endl;
+    }
+
+    BinarySearchTree copyTree() {
+        BinarySearchTree copiedTree;
+        copiedTree.root = copyTree(root);
+        return copiedTree;
+    }
+
+    void displayTree() {
+        inOrderTraversal(root);
+        std::cout << std::endl;
+    }
+
+private:
+    TreeNode* insertNode(TreeNode* node, int value) {
+        if (node == nullptr) {
+            return new TreeNode(value);
+        }
+
+        if (value < node->data) {
+            node->left = insertNode(node->left, value);
+        } else if (value > node->data) {
+            node->right = insertNode(node->right, value);
+        }
+
+        return node;
+    }
+
+    int calculateDepth(TreeNode* node) {
+        return (node == nullptr) ? 0 : 1 + std::max(calculateDepth(node->left), calculateDepth(node->right));
+    }
+
+    TreeNode* createMirror(TreeNode* node) {
+        if (node == nullptr) {
+            return nullptr;
+        }
+
+        TreeNode* mirroredNode = new TreeNode(node->data);
+        mirroredNode->left = createMirror(node->right);
+        mirroredNode->right = createMirror(node->left);
+
+        return mirroredNode;
+    }
+
+    TreeNode* copyTree(TreeNode* node) {
+    if (node == nullptr) {
+        return nullptr;
+    }
+
+    TreeNode* newNode = new TreeNode(node->data);
+    newNode->left = copyTree(node->left);
+    newNode->right = copyTree(node->right);
+
+    return newNode;
+}
+
+
+    void inOrderTraversal(TreeNode* node) {
+        if (node != nullptr) {
+            inOrderTraversal(node->left);
+            std::cout << node->data << " ";
+            inOrderTraversal(node->right);
+        }
+    }
+};
+
+int main() {
+    BinarySearchTree bst;
+
+    bst.insert(50);
+    bst.insert(30);
+    bst.insert(70);
+    bst.insert(20);
+    bst.insert(40);
+    bst.insert(60);
+    bst.insert(80);
+
+    std::cout << "Original Tree (In-order Traversal): ";
+    bst.displayTree();
+
+    std::cout << "Depth of the Tree: " << bst.depth() << std::endl;
+
+    std::cout << "Mirror Image of the Tree: ";
+    bst.displayMirrorImage();
+
+    BinarySearchTree copiedTree = bst.copyTree();
+    std::cout << "Copied Tree (In-order Traversal): ";
+    copiedTree.displayTree();
+
+    return 0;
+}
+
+* Represent a graph of your college campus using adjacency list /adjacency matrix. Nodes should
+represent the various departments/institutes and links should represent the distance between them.
+ Find minimum spanning tree Using Kruskal’s algorithm.
+
+
+#include<iostream>
+#include<string.h>
+using namespace std;
+class Graph
+{
+char Vnames[10][10];
+int cost[10][10],n;
+public:
+Graph();
+void creat_graph();
+void display();
+int Position(char[]);
+void kru();
+};
+Graph::Graph()
+{
+n=0;
+for(int i=0;i<10;i++)
+for(int j=0;j<10;j++)
+{
+ cost[i][j]=999;
+}
+}
+void Graph::creat_graph()
+{
+char ans,Start[10],End[10];
+int wt,i,j;
+cout<<"Enter number of nodes";
+cin>>n;
+cout<<"\n Enter vertex name:";
+for(i=0;i<n;i++)
+ cin>>Vnames[i];
+do
+{
+cout<<"\nEnter Start and end point of edge";
+cin>>Start>>End;
+cout<<"Enter weight";
+cin>>wt;
+i=Position(Start);
+j=Position(End);
+cost[i][j]=cost[j][i]=wt;
+cout<<"\nMore Edges ";
+cin>>ans;
+}while(ans=='y' || ans=='Y');
+}
+void Graph::display()
+{
+int i,j;
+for(i=0;i<n;i++)
+{
+cout<<"\n";
+for(j=0;j<n;j++)
+cout<<"\t"<<cost[i][j];
+}
+}
+int Graph::Position(char key[10])
+{
+for(int i=0;i<n;i++)
+if(strcmp(Vnames[i],key)==0)
+return i;
+return -1;
+}
+void Graph::kru()
+{ int i,j,x,y,Total_cost=0,min,gr=1,flag=0,temp, v[10]={0};
+while(flag==0)
+{ min=999;
+for(i=0;i<n;i++) //find the minimum edge 
+{ for(j=0;j<n;j++)
+ { if(cost[i][j]<min)
+{ min=cost[i][j];
+x=i;
+y=j;
+ }//end of if 
+}//end inner for 
+}//end of outer for 
+if(v[x]==0 && v[y]==0) //both are not visited 
+{ v[x]=v[y]=gr;
+gr++;
+}
+else if(v[x]!=0 && v[y]==0)// x visited , y not visited
+v[y]=v[x]; //assign group of x to y 
+else if(v[x]==0 && v[y]!=0)// x not visited,y visited
+v[x]=v[y];//assign group of y to x 
+else
+{ if(v[x]!=v[y]) // both belong to diffrent group 
+{ temp=v[x];
+for(i=0;i<n;i++)
+{ if(v[i]==temp)
+v[i]=v[y];
+}//end of for 
+}//end of if 
+}//end of else 
+cost[x][y]=cost[y][x]=999;
+Total_cost = Total_cost + min;
+cout<<"\n"<<Vnames[x]<<"\t"<<Vnames[y]<<"\t"<<min;
+//print visit array after every step
+ temp=v[0]; flag=1;
+ for(i=0;i<n;i++)
+ { if(temp!=v[i])
+ { flag=0;
+break;
+ }
+ }//end of inner for 
+}//end of while 
+cout<<"\nTotal cost of tree="<<Total_cost;
+}
+int main()
+{
+Graph ob;
+ob.creat_graph();
+ob.display();
+ob.kru();
+}
+
+
+

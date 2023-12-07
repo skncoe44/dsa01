@@ -1,0 +1,169 @@
+•	Implement Circular Queue using Array. Perform following operations on it.
+ a) Insertion (Enqueue) 
+b) Deletion (Dequeue) 
+c) Display 
+(Note: Handle queue full condition by considering a fixed size of a queue.)
+
+#include <iostream>
+using namespace std;
+
+const int MAX_SIZE = 5; // Change the size as needed
+
+class CircularQueue {
+private:
+    int front, rear;
+    int queue[MAX_SIZE];
+
+public:
+    CircularQueue() : front(-1), rear(-1) {}
+
+    // Function to check if the queue is empty
+    bool isEmpty() {
+        return front == -1 && rear == -1;
+    }
+
+    // Function to check if the queue is full
+    bool isFull() {
+        return (rear + 1) % MAX_SIZE == front;
+    }
+
+    // Function to enqueue (insert) an element
+    void enqueue(int value) {
+        if (isFull()) {
+            cout << "Queue is full. Cannot enqueue.\n";
+            return;
+        }
+
+        if (isEmpty()) {
+            front = rear = 0;
+        } else {
+            rear = (rear + 1) % MAX_SIZE;
+        }
+
+        queue[rear] = value;
+        cout << "Enqueued: " << value << "\n";
+    }
+
+    // Function to dequeue (delete) an element
+    void dequeue() {
+        if (isEmpty()) {
+            cout << "Queue is empty. Cannot dequeue.\n";
+            return;
+        }
+
+        cout << "Dequeued: " << queue[front] << "\n";
+
+        if (front == rear) {
+            // Last element is dequeued
+            front = rear = -1;
+        } else {
+            front = (front + 1) % MAX_SIZE;
+        }
+    }
+
+    // Function to display the elements in the queue
+    void display() {
+        if (isEmpty()) {
+            cout << "Queue is empty.\n";
+            return;
+        }
+
+        int i = front;
+        cout << "Queue: ";
+        do {
+            cout << queue[i] << " ";
+            i = (i + 1) % MAX_SIZE;
+        } while (i != (rear + 1) % MAX_SIZE);
+
+        cout << "\n";
+    }
+};
+
+int main() {
+    CircularQueue cq;
+
+    cq.enqueue(1);
+    cq.enqueue(2);
+    cq.enqueue(3);
+    cq.display();
+
+    cq.dequeue();
+    cq.display();
+
+    cq.enqueue(4);
+    cq.enqueue(5);
+    cq.enqueue(6); 
+    cq.enqueue(7);// This will show an error as the queue is full
+    cq.display();
+
+    return 0;
+}
+
+
+•	Implement Heap sort to sort given set of values using max or min heap.
+
+#include <iostream>
+#include <vector>
+
+using namespace std;
+
+// Function to perform heapify operation
+void heapify(vector<int>& arr, int n, int i) {
+    int largest = i;
+    int left = 2 * i + 1;
+    int right = 2 * i + 2;
+
+    if (left < n && arr[left] > arr[largest])
+        largest = left;
+
+    if (right < n && arr[right] > arr[largest])
+        largest = right;
+
+    if (largest != i) {
+        swap(arr[i], arr[largest]);
+        heapify(arr, n, largest);
+    }
+}
+
+// Function to build a max heap
+void buildHeap(vector<int>& arr) {
+    int n = arr.size();
+    for (int i = n / 2 - 1; i >= 0; i--)
+        heapify(arr, n, i);
+}
+
+// Function to perform heap sort
+void heapSort(vector<int>& arr) {
+    int n = arr.size();
+
+    // Build max heap
+    buildHeap(arr);
+
+    // Extract elements one by one from the heap
+    for (int i = n - 1; i > 0; i--) {
+        swap(arr[0], arr[i]);  // Move current root to end
+        heapify(arr, i, 0);    // Call heapify on the reduced heap
+    }
+}
+
+// Function to print an array
+void printArray(const vector<int>& arr) {
+    for (int i : arr)
+        cout << i << " ";
+    cout << endl;
+}
+
+// Main method
+int main() {
+    vector<int> values = {12, 11, 13, 5, 6, 7};
+
+    cout << "Original array: ";
+    printArray(values);
+
+    heapSort(values);
+
+    cout << "Sorted array: ";
+    printArray(values);
+
+    return 0;
+}

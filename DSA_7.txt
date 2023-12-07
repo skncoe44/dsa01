@@ -1,0 +1,394 @@
+•	Implement Binary search tree and perform following operations: 
+a)	Insert b) Display tree (Traversal) c) Display - Mirror image d) Display tree level wise
+
+#include <iostream>
+#include <queue>
+
+struct TreeNode {
+    int data;
+    TreeNode* left;
+    TreeNode* right;
+
+    TreeNode(int value) : data(value), left(nullptr), right(nullptr) {}
+};
+
+class BinarySearchTree {
+private:
+    TreeNode* root;
+
+public:
+    BinarySearchTree() : root(nullptr) {}
+
+    void insert(int value) {
+        root = insertRecursive(root, value);
+    }
+
+    void displayTree() {
+        inOrderTraversal(root);
+        std::cout << "\n";
+    }
+
+    void displayMirrorImage() {
+        TreeNode* mirroredRoot = mirrorImage(root);
+        inOrderTraversal(mirroredRoot);
+        std::cout << "\n";
+        deleteTree(mirroredRoot);
+    }
+
+    void displayLevelOrder() {
+        levelOrderTraversal(root);
+        std::cout << "\n";
+    }
+
+    ~BinarySearchTree() {
+        deleteTree(root);
+    }
+
+private:
+    TreeNode* insertRecursive(TreeNode* node, int value) {
+        if (node == nullptr) {
+            return new TreeNode(value);
+        }
+
+        if (value < node->data) {
+            node->left = insertRecursive(node->left, value);
+        } else if (value > node->data) {
+            node->right = insertRecursive(node->right, value);
+        }
+
+        return node;
+    }
+
+    void inOrderTraversal(TreeNode* node) {
+        if (node != nullptr) {
+            inOrderTraversal(node->left);
+            std::cout << node->data << " ";
+            inOrderTraversal(node->right);
+        }
+    }
+
+    TreeNode* mirrorImage(TreeNode* node) {
+        if (node == nullptr) {
+            return nullptr;
+        }
+
+        TreeNode* mirroredNode = new TreeNode(node->data);
+        mirroredNode->left = mirrorImage(node->right);
+        mirroredNode->right = mirrorImage(node->left);
+
+        return mirroredNode;
+    }
+
+    void levelOrderTraversal(TreeNode* node) {
+        if (node == nullptr) {
+            return;
+        }
+
+        std::queue<TreeNode*> q;
+        q.push(node);
+
+        while (!q.empty()) {
+            TreeNode* current = q.front();
+            q.pop();
+
+            std::cout << current->data << " ";
+
+            if (current->left != nullptr) {
+                q.push(current->left);
+            }
+
+            if (current->right != nullptr) {
+                q.push(current->right);
+            }
+        }
+    }
+
+    void deleteTree(TreeNode* node) {
+        if (node != nullptr) {
+            deleteTree(node->left);
+            deleteTree(node->right);
+            delete node;
+        }
+    }
+};
+
+int main() {
+    BinarySearchTree bst;
+
+    // Insert nodes into the BST
+    bst.insert(50);
+    bst.insert(30);
+    bst.insert(70);
+    bst.insert(20);
+    bst.insert(40);
+    bst.insert(60);
+    bst.insert(80);
+
+    // Display the tree
+    std::cout << "Tree (In-order Traversal): ";
+    bst.displayTree();
+
+    // Display the mirror image of the tree
+    std::cout << "Mirror Image (In-order Traversal): ";
+    bst.displayMirrorImage();
+
+    // Display the tree level-wise
+    std::cout << "Tree (Level-order Traversal): ";
+    bst.displayLevelOrder();
+
+    return 0;
+}
+
+
+
+
+*   
+
+#include <iostream>
+#include<queue>
+
+struct TreeNode {
+    int data;
+    TreeNode* left;
+    TreeNode* right;
+
+    TreeNode(int value) : data(value), left(nullptr), right(nullptr) {}
+};
+
+class BinarySearchTree {
+private:
+    TreeNode* root;
+
+public:
+    BinarySearchTree() : root(nullptr) {}
+
+    void insert(int value) {
+        root = insertRecursive(root, value);
+    }
+
+    void displayTree() {
+        std::cout << "Tree (In-order Traversal): ";
+        inOrderTraversal(root);
+        std::cout << "\n";
+    }
+
+    void displayMirrorImage() {
+        TreeNode* mirroredRoot = mirrorImage(root);
+        std::cout << "Mirror Image (In-order Traversal): ";
+        inOrderTraversal(mirroredRoot);
+        std::cout << "\n";
+        deleteTree(mirroredRoot);
+    }
+
+    void displayLevelOrder() {
+        std::cout << "Tree (Level-order Traversal): ";
+        levelOrderTraversal(root);
+        std::cout << "\n";
+    }
+
+private:
+    TreeNode* insertRecursive(TreeNode* node, int value) {
+        if (node == nullptr) {
+            return new TreeNode(value);
+        }
+
+        if (value < node->data) {
+            node->left = insertRecursive(node->left, value);
+        } else if (value > node->data) {
+            node->right = insertRecursive(node->right, value);
+        }
+
+        return node;
+    }
+
+    void inOrderTraversal(TreeNode* node) {
+        if (node != nullptr) {
+            inOrderTraversal(node->left);
+            std::cout << node->data << " ";
+            inOrderTraversal(node->right);
+        }
+    }
+
+    TreeNode* mirrorImage(TreeNode* node) {
+        if (node == nullptr) {
+            return nullptr;
+        }
+
+        TreeNode* mirroredNode = new TreeNode(node->data);
+        mirroredNode->left = mirrorImage(node->right);
+        mirroredNode->right = mirrorImage(node->left);
+
+        return mirroredNode;
+    }
+
+    void levelOrderTraversal(TreeNode* node) {
+        if (node == nullptr) {
+            return;
+        }
+
+        std::queue<TreeNode*> q;
+        q.push(node);
+
+        while (!q.empty()) {
+            TreeNode* current = q.front();
+            q.pop();
+
+            std::cout << current->data << " ";
+
+            if (current->left != nullptr) {
+                q.push(current->left);
+            }
+
+            if (current->right != nullptr) {
+                q.push(current->right);
+            }
+        }
+    }
+
+    void deleteTree(TreeNode* node) {
+        if (node != nullptr) {
+            deleteTree(node->left);
+            deleteTree(node->right);
+            delete node;
+        }
+    }
+};
+
+int main() {
+    BinarySearchTree bst;
+
+    int value;
+    char choice;
+
+    do {
+        std::cout << "Enter a value to insert into the BST: ";
+        std::cin >> value;
+        bst.insert(value);
+
+        std::cout << "Do you want to insert another value? (y/n): ";
+        std::cin >> choice;
+
+    } while (choice == 'y' || choice == 'Y');
+
+    // Display the tree
+    bst.displayTree();
+
+    // Display the mirror image of the tree
+    bst.displayMirrorImage();
+
+    // Display the tree level-wise
+    bst.displayLevelOrder();
+
+    return 0;
+}
+
+
+
+
+* 	Represent a graph of your college campus using adjacency list /adjacency matrix. Nodes should
+represent the various departments/institutes and links should represent the distance between them.
+ Find minimum spanning tree Using Prim’s algorithm.
+
+
+
+#include<iostream>
+#include<string.h>
+using namespace std;
+class Graph
+{
+char Vnames[10][10];
+int cost[10][10],n;
+public:
+Graph();
+void creat_graph();
+void display();
+int Position(char[]);
+void prims();
+};
+Graph::Graph()
+{
+n=0;
+for(int i=0;i<10;i++)
+ for(int j=0;j<10;j++)
+{
+cost[i][j]=999;
+}
+}
+void Graph::creat_graph()
+{
+char ans,Start[10],End[10];
+int wt,i,j;
+cout<<"Enter number of nodes";
+cin>>n;
+cout<<"\n Enter vertex name:";
+for(i=0;i<n;i++)
+ cin>>Vnames[i];
+do
+{
+cout<<"\nEnter Start and end point of edge";
+cin>>Start>>End;
+cout<<"Enter weight";
+cin>>wt;
+i=Position(Start);
+j=Position(End);
+cost[i][j]=cost[j][i]=wt;
+cout<<"\nMore Edges ";
+cin>>ans;
+}while(ans=='y' || ans=='Y');
+}
+void Graph::display()
+{
+int i,j;
+for(i=0;i<n;i++)
+{
+cout<<"\n";
+for(j=0;j<n;j++)
+cout<<"\t"<<cost[i][j];
+}
+}
+int Graph::Position(char key[10])
+{
+for(int i=0;i<n;i++)
+if(strcmp(Vnames[i],key)==0)
+return i;
+return -1;
+}
+void Graph::prims()
+{ int cnt=1,b,i,j,x,y,Total_cost=0,min,visit[10]={0};
+char start[10];
+cout<<"\n Starting node=";
+cin>>start;
+x=Position(start);
+visit[x]=1;
+while(cnt<n)
+{
+min=999;
+for(i=0;i<n;i++)
+{
+if(visit[i]==1)
+{
+ for(j=0;j<n;j++) // find minimum from adjacent 
+ { if(cost[i][j]<min && visit[j]==0) //not visited 
+ { min=cost[i][j];
+x=i;
+y=j;
+ }//end of if 
+ }//end of inner for 
+ }//end of if 
+ }//end of outer for 
+//outer for find minmum from all adjacent that are visited 
+ cout<<"\n"<<Vnames[x]<<"\t"<<Vnames[y]<<"\t"<<min;
+ Total_cost=Total_cost+min;
+ cost[x][y]=cost[y][x]=999;
+ visit[y]=1;
+ cnt++;
+}//end of while 
+cout<<"\nTotal cost of tree=>"<<Total_cost;
+}//end of prims()
+int main()
+{
+Graph G1;
+G1.creat_graph();
+G1.display();
+G1. prims();
+}

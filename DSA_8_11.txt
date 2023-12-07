@@ -1,0 +1,287 @@
+Implement Stack as an abstract data type using singly linked list and use this ADT for
+conversion of infix expression to Postfix and evaluation of Postfix expression
+
+#include <iostream>
+#include <stack>
+#include <cctype>
+#include <cmath> // Include cmath for pow function
+
+class Stack {
+private:
+    struct Node {
+        char data;
+        Node* next;
+
+        explicit Node(char value) : data(value), next(nullptr) {}
+    };
+
+    Node* top;
+
+public:
+    Stack() : top(nullptr) {}
+
+    bool isEmpty() {
+        return top == nullptr;
+    }
+
+    void push(char value) {
+        Node* newNode = new Node(value);
+        newNode->next = top;
+        top = newNode;
+    }
+
+    char pop() {
+        if (isEmpty()) {
+            std::cerr << "Error: Stack underflow\n";
+            return '\0';
+        }
+        Node* temp = top;
+        char poppedValue = temp->data;
+        top = top->next;
+        delete temp;
+        return poppedValue;
+    }
+
+    char peek() {
+        if (isEmpty()) {
+            std::cerr << "Error: Stack is empty\n";
+            return '\0';
+        }
+        return top->data;
+    }
+};
+
+bool isOperand(char ch) {
+    return isalnum(ch);
+}
+
+int getPrecedence(char op) {
+    if (op == '+' || op == '-') return 1;
+    if (op == '*' || op == '/') return 2;
+    if (op == '^') return 3; // Add precedence for '^'
+    return 0;
+}
+
+float operation(char op, float A, float B) {
+    float result;
+    switch (op) {
+        case '+':
+            result = A + B;
+            break;
+        case '-':
+            result = A - B;
+            break;
+        case '*':
+            result = A * B;
+            break;
+        case '/':
+            result = A / B;
+            break;
+        case '^':
+            result = std::pow(A, B); // Use std::pow for exponentiation
+            break;
+        default:
+            std::cerr << "Error: Invalid operator\n";
+            result = 0;
+    }
+    return result;
+}
+
+std::string infixToPostfix(const std::string& infix) {
+    std::string postfix;
+    Stack operatorStack;
+
+    for (char ch : infix) {
+        if (isOperand(ch)) {
+            postfix += ch;
+        } else if (ch == '(') {
+            operatorStack.push(ch);
+        } else if (ch == ')') {
+            while (!operatorStack.isEmpty() && operatorStack.peek() != '(') {
+                postfix += operatorStack.pop();
+            }
+            operatorStack.pop();
+        } else {
+            while (!operatorStack.isEmpty() && getPrecedence(operatorStack.peek()) >= getPrecedence(ch)) {
+                postfix += operatorStack.pop();
+            }
+            operatorStack.push(ch);
+        }
+    }
+
+    while (!operatorStack.isEmpty()) {
+        postfix += operatorStack.pop();
+    }
+
+    return postfix;
+}
+
+float postfixEvaluation(const std::string& postfix) {
+    Stack operandStack;
+
+    for (char ch : postfix) {
+        if (isalpha(ch)) {
+            std::cout << "\nEnter the value of " << ch << " => ";
+            float val;
+            std::cin >> val;
+            operandStack.push(val);
+        } else if (isdigit(ch)) {
+            operandStack.push(ch - '0');
+        } else {
+            float operand2 = operandStack.pop();
+            float operand1 = operandStack.pop();
+            float result = operation(ch, operand1, operand2);
+            operandStack.push(result);
+        }
+    }
+
+    return operandStack.pop();
+}
+
+int main() {
+    int choice;
+    std::string expression;
+
+    do {
+        std::cout << "\nSELECT THE CHOICE FROM BELOW"
+                  << "\n1: Infix to Postfix"
+                  << "\n2: Postfix Evaluation"
+                  << "\n3: Exit";
+        std::cout << "\nEnter your Choice: ";
+        std::cin >> choice;
+
+        switch (choice) {
+            case 1:
+                std::cout << "\nEnter infix Expression: ";
+                std::cin >> expression;
+                std::cout << "Postfix Expression: " << infixToPostfix(expression) << std::endl;
+                break;
+
+            case 2:
+                std::cout << "\nEnter Postfix Expression: ";
+                std::cin >> expression;
+                std::cout << "\nEvaluated Result: " << postfixEvaluation(expression) << std::endl;
+                break;
+
+            case 3:
+                std::cout << "Exiting the program.\n";
+                break;
+
+            default:
+                std::cerr << "Invalid choice. Please enter a valid choice.\n";
+        }
+    } while (choice != 3);
+
+    return 0;
+}
+
+
+
+
+
+*    Represent a graph of your college campus using adjacency list /adjacency matrix. Nodes should
+represent the various departments/institutes and links should represent the distance between them.
+ Find minimum spanning tree Using Prim’s algorithm.
+
+
+#include<iostream>
+#include<string.h>
+using namespace std;
+class Graph
+{
+char Vnames[10][10];
+int cost[10][10],n;
+public:
+Graph();
+void creat_graph();
+void display();
+int Position(char[]);
+void prims();
+};
+Graph::Graph()
+{
+n=0;
+for(int i=0;i<10;i++)
+ for(int j=0;j<10;j++)
+{
+cost[i][j]=999;
+}
+}
+void Graph::creat_graph()
+{
+char ans,Start[10],End[10];
+int wt,i,j;
+cout<<"Enter number of nodes";
+cin>>n;
+cout<<"\n Enter vertex name:";
+for(i=0;i<n;i++)
+ cin>>Vnames[i];
+do
+{
+cout<<"\nEnter Start and end point of edge";
+cin>>Start>>End;
+cout<<"Enter weight";
+cin>>wt;
+i=Position(Start);
+j=Position(End);
+cost[i][j]=cost[j][i]=wt;
+cout<<"\nMore Edges ";
+cin>>ans;
+}while(ans=='y' || ans=='Y');
+}
+void Graph::display()
+{
+int i,j;
+for(i=0;i<n;i++)
+{
+cout<<"\n";
+for(j=0;j<n;j++)
+cout<<"\t"<<cost[i][j];
+}
+}
+int Graph::Position(char key[10])
+{
+for(int i=0;i<n;i++)
+if(strcmp(Vnames[i],key)==0)
+return i;
+return -1;
+}
+void Graph::prims()
+{ int cnt=1,b,i,j,x,y,Total_cost=0,min,visit[10]={0};
+char start[10];
+cout<<"\n Starting node=";
+cin>>start;
+x=Position(start);
+visit[x]=1;
+while(cnt<n)
+{
+min=999;
+for(i=0;i<n;i++)
+{
+if(visit[i]==1)
+{
+ for(j=0;j<n;j++) // find minimum from adjacent 
+ { if(cost[i][j]<min && visit[j]==0) //not visited 
+ { min=cost[i][j];
+x=i;
+y=j;
+ }//end of if 
+ }//end of inner for 
+ }//end of if 
+ }//end of outer for 
+//outer for find minmum from all adjacent that are visited 
+ cout<<"\n"<<Vnames[x]<<"\t"<<Vnames[y]<<"\t"<<min;
+ Total_cost=Total_cost+min;
+ cost[x][y]=cost[y][x]=999;
+ visit[y]=1;
+ cnt++;
+}//end of while 
+cout<<"\nTotal cost of tree=>"<<Total_cost;
+}//end of prims()
+int main()
+{
+Graph G1;
+G1.creat_graph();
+G1.display();
+G1. prims();
+}

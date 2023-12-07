@@ -1,0 +1,305 @@
+• Implement Binary search tree and perform following operations: 
+a) Insert   b) Search    c) Display tree (Traversal)  d) Display leaf nodes
+
+#include <iostream>
+
+struct TreeNode {
+    int data;
+    TreeNode* left;
+    TreeNode* right;
+
+    TreeNode(int value) : data(value), left(nullptr), right(nullptr) {}
+};
+
+class BinarySearchTree {
+private:
+    TreeNode* root;
+
+    TreeNode* insert(TreeNode* node, int value) {
+        if (node == nullptr) {
+            return new TreeNode(value);
+        }
+
+        (value < node->data) ? node->left = insert(node->left, value) : node->right = insert(node->right, value);
+
+        return node;
+    }
+
+    void inOrderTraversal(TreeNode* node) {
+        if (node != nullptr) {
+            inOrderTraversal(node->left);
+            std::cout << node->data << " ";
+            inOrderTraversal(node->right);
+        }
+    }
+
+    void displayLeafNodes(TreeNode* node) {
+        if (node != nullptr) {
+            if (node->left == nullptr && node->right == nullptr) {
+                std::cout << node->data << " ";
+            }
+            displayLeafNodes(node->left);
+            displayLeafNodes(node->right);
+        }
+    }
+
+public:
+    BinarySearchTree() : root(nullptr) {}
+
+    void insert(int value) {
+        root = insert(root, value);
+    }
+
+    void displayTree() {
+        std::cout << "Tree (In-order Traversal): ";
+        inOrderTraversal(root);
+        std::cout << "\n";
+    }
+
+    void displayLeafNodes() {
+        std::cout << "Leaf Nodes: ";
+        displayLeafNodes(root);
+        std::cout << "\n";
+    }
+
+    bool search(int value) {
+        TreeNode* current = root;
+
+        while (current != nullptr) {
+            if (value == current->data) {
+                return true;
+            }
+
+            (value < current->data) ? current = current->left : current = current->right;
+        }
+
+        return false;
+    }
+};
+
+int main() {
+    BinarySearchTree bst;
+
+    // Insert nodes
+    for (int value : {50, 30, 70, 20, 40, 60, 80}) {
+        bst.insert(value);
+    }
+
+    // Display tree
+    bst.displayTree();
+
+    // Display leaf nodes
+    bst.displayLeafNodes();
+
+    // Search for a node
+    int searchValue = 40;
+    std::cout << "Node " << searchValue << (bst.search(searchValue) ? " found" : " not found") << " in the BST.\n";
+
+    return 0;
+}
+
+•	Implement Threaded Binary Tree and traverse it in In-order Post- order and Pre-order.
+
+
+#include<iostream>
+#include<string.h>
+using namespace std;
+class tree
+{
+	struct node
+	{	char data;
+		node *left,*right;
+	};
+	node *root;
+public:
+	tree()
+	{
+	    root=NULL;
+    }
+void create_post();
+void create_pre();
+void pre(node *);
+void in(node *);
+void post(node *);
+void preN();
+void inN();
+void postN();
+node *return_root()
+    {
+    return root;
+    }
+};
+
+void tree::create_post()
+{
+node *s[100];
+int top=-1;
+char post[100],token;
+cout<<"\nEnter postfix Expression=>";
+cin>>post;
+for(int i=0;post[i]!='\0';i++)
+{
+    token=post[i];
+    node *newnode=new node;
+    newnode->data=token;
+    newnode->left=newnode->right=NULL;
+
+if(isalnum(token))
+	s[++top]=newnode;
+else
+    {
+	newnode->right=s[top--];
+	newnode->left=s[top--];
+	s[++top]=newnode;
+    }
+root=s[top];
+}
+}
+void tree::create_pre()
+{
+  node *s[100];
+  int top=-1;
+  char pre[100],token;
+  cout<<"\nEnter prefix Expression=>";
+  cin>>pre;
+for(int i=strlen(pre)-1;i>=0;i--)
+{
+    token=pre[i];
+	node *newnode=new node;
+	newnode->data=token;
+	newnode->left=newnode->right=NULL;
+if(isalnum(token))
+	s[++top]=newnode;
+else
+   {
+	newnode->left=s[top--];
+	newnode->right=s[top--];
+	s[++top]=newnode;
+   }
+  root=s[top];
+}
+}
+
+void tree::pre(node *temp)
+{
+	if(temp!=NULL)
+	{	cout<<"\t"<<temp->data;
+		pre(temp->left);
+		pre(temp->right);
+	}
+}
+void tree::in(node *temp)
+{
+	if(temp!=NULL)
+	{	in(temp->left);
+		cout<<"\t"<<temp->data;
+		in(temp->right);
+	}
+}
+
+void tree::post(node *temp)
+{
+	if(temp!=NULL)
+	{	post(temp->left);
+		post(temp->right);
+		cout<<"\t"<<temp->data;
+
+	}
+}
+
+void tree::preN()
+{
+node *s[100],*temp=root;
+int top=-1;
+	while(temp!=NULL || top>-1)
+	{
+		while(temp!=NULL)
+		    {
+			cout<<"\t"<<temp->data;
+			s[++top]=temp;
+			temp=temp->left;
+		    }
+		     temp=s[top--];
+		     temp=temp->right;
+	}
+}
+
+void tree::inN()
+{
+node *s[100],*temp=root;
+int top=-1;
+	while(temp!=NULL || top>-1)
+	{
+		while(temp!=NULL)
+		    {
+			s[++top]=temp;
+			temp=temp->left;
+	    	}
+		    temp=s[top--];
+	     	cout<<"\t"<<temp->data;
+		    temp=temp->right;
+	}
+}
+
+void tree::postN()
+{
+node *s[100],*temp=root;
+char post[100];
+int i=0,top=-1;
+	while(temp!=NULL || top>-1)
+	{
+		while(temp!=NULL)
+		{
+			post[i++]=temp->data;
+			s[++top]=temp;
+			temp=temp->right;
+		}
+		temp=s[top--];
+		temp=temp->left;
+	}
+    for(i=strlen(post)-1;i>=0;i--)
+	  cout<<"\t"<<post[i];
+}
+
+int main()
+{
+  tree ob;
+  int ch,choice;
+
+do
+{   cout<<"\n1:Create Expression tree using Postfix Expression\n2:Create Expression tree using Prefix Expression\n3:End the Execution";
+    cout<<"\nEnter choice from above ";
+    cin>>ch;
+    if(ch==1)
+        ob.create_post();
+    else if(ch==2)
+        ob.create_pre();
+    else
+        return 0;
+    cout<<"\n1:Use Recursive Traversals \n2:Use Non Recursive Traversals";
+    cout<<"\nEnter your choice ";
+    cin>>choice;
+switch(choice)
+{
+  case 1:
+	   cout<<"\nRecursive Preorder=>";
+	   ob.pre(ob.return_root());
+	   cout<<"\nRecursive Inorder=>";
+	   ob.in(ob.return_root());
+           cout<<"\nRecursive Postorder=>";
+	   ob.post(ob.return_root());
+	   cout<<endl;
+	   break;
+
+  case 2:
+	   cout<<"\nPreorder=>";
+	   ob.preN();
+	   cout<<"\nInorder=>";
+	   ob.inN();
+	   cout<<"\nPostorder=>";
+	   ob.postN();
+           cout<<endl;
+	   break;
+}
+}while(ch<3);
+}

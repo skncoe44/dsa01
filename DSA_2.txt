@@ -1,0 +1,214 @@
+•	Consider a student database of SEIT class (at least 15 records). Database contains different fields of every student like Roll No, Name and SGPA.(Array of structure)
+a) Design a roll call list, Arrange list of students alphabetically. (Use Insertion sort)
+b) Search a particular student according to name using Binary search
+
+#include <iostream>
+#include <string>
+using namespace std;
+
+struct Student {
+    int rollNo;
+    string name;
+    float sgpa;
+};
+
+void insertionSort(Student arr[], int n) {
+    for (int i = 1; i < n; ++i) {
+        Student key = arr[i];
+        int j = i - 1;
+
+        while (j >= 0 && arr[j].name > key.name) {
+            arr[j + 1] = arr[j];
+            --j;
+        }
+
+        arr[j + 1] = key;
+    }
+}
+
+int binarySearch(const Student arr[], int left, int right, const string& key) {
+    while (left <= right) {
+        int mid = left + (right - left) / 2;
+
+        if (arr[mid].name == key)
+            return mid;
+
+        if (arr[mid].name < key)
+            left = mid + 1;
+        else
+            right = mid - 1;
+    }
+
+    return -1;
+}
+
+void displayRollCall(const Student arr[], int n) {
+    for (int i = 0; i < n; ++i) {
+        if(arr[i].rollNo != 0)
+            cout << "Roll No: " << arr[i].rollNo << "\tName: " << arr[i].name << "\tSGPA: " << arr[i].sgpa << endl;
+    }
+}
+
+void inputStudentData(Student arr[], int n) {
+    for (int i = 0; i < n; ++i) {
+        cout << "Enter details for Student " << i + 1 << ":" << endl;
+        cout << "Roll No: ";
+        cin >> arr[i].rollNo;
+
+        cout << "Name: ";
+        cin >> arr[i].name;
+
+        cout << "SGPA: ";
+        cin >> arr[i].sgpa;
+
+        cout << endl;
+    }
+}
+
+int main() {
+    int numStudents;
+    cout << "Enter no of students: ";
+    cin >> numStudents;
+
+    Student studentDB[numStudents];
+
+    // Call the function to input student data
+    inputStudentData(studentDB, numStudents);
+
+    // a) Design a roll call list, Arrange list of students alphabetically. (Use Insertion sort)
+    insertionSort(studentDB, numStudents);
+
+    cout << "Sorted Roll Call List:" << std::endl;
+    displayRollCall(studentDB, numStudents);
+
+    // b) Search a particular student according to name using Binary search
+    string searchName;
+    cout << "\nEnter the name to search: ";
+    cin >> searchName;
+
+    int index = binarySearch(studentDB, 0, numStudents - 1, searchName);
+
+    if (index != -1) {
+        cout << "Student found at index " << index << ":" << endl;
+        cout << "Roll No: " << studentDB[index].rollNo << "\tName: " << studentDB[index].name << "\tSGPA: " << studentDB[index].sgpa << std::endl;
+    } else {
+        cout << "Student not found." << endl;
+    }
+
+    return 0;
+}
+
+
+•	Implement Threaded Binary Tree and traverse it in In-order Post- order and Pre-order.
+
+
+#include <iostream>
+using namespace std;
+
+// Define a structure for the nodes in the threaded binary tree
+struct Node {
+    int data;
+    Node* left;
+    Node* right;
+    bool rightThread; // Indicates if the right pointer is a thread
+};
+
+// Function to create a new node
+Node* createNode(int data) {
+    Node* newNode = new Node;
+    newNode->data = data;
+    newNode->left = nullptr;
+    newNode->right = nullptr;
+    newNode->rightThread = false;
+    return newNode;
+}
+
+// Function to insert a node into the threaded binary tree
+void insert(Node*& root, int data) {
+    if (!root) {
+        root = createNode(data);
+    } else if (data < root->data) {
+        insert(root->left, data);
+    } else if (data > root->data) {
+        if (root->rightThread) {
+            // If right pointer is a thread, insert a new node
+            Node* newNode = createNode(data);
+            newNode->left = root;
+            newNode->right = root->right;
+            root->right = newNode;
+            root->rightThread = false;
+        } else {
+            insert(root->right, data);
+        }
+    }
+}
+
+// Function to perform in-order traversal of the threaded binary tree
+void inOrderTraversal(Node* root) {
+    Node* current = root;
+    while (current) {
+        while (current->left) {
+            current = current->left;
+        }
+        std::cout << current->data << " ";
+
+        if (current->rightThread) {
+            current = current->right;
+        } else {
+            current = current->right;
+            while (current && !current->rightThread) {
+                cout << current->data << " ";
+                current = current->right;
+            }
+        }
+    }
+}
+
+// Function to perform pre-order traversal of the threaded binary tree
+void preOrderTraversal(Node* root) {
+    if (root) {
+        cout << root->data << " ";
+        preOrderTraversal(root->left);
+        preOrderTraversal(root->right);
+    }
+}
+
+// Function to perform post-order traversal of the threaded binary tree
+void postOrderTraversal(Node* root) {
+    if (root) {
+        postOrderTraversal(root->left);
+        postOrderTraversal(root->right);
+        cout << root->data << " ";
+    }
+}
+
+// Main method to test the threaded binary tree
+int main() {
+    Node* root = nullptr;
+
+    // Insert nodes into the threaded binary tree
+    insert(root, 50);
+    insert(root, 30);
+    insert(root, 70);
+    insert(root, 20);
+    insert(root, 40);
+    insert(root, 60);
+    insert(root, 80);
+
+    // Perform in-order traversal
+    cout << "In-order Traversal: ";
+    inOrderTraversal(root);
+    cout << endl;
+
+    // Perform pre-order traversal
+    cout << "Pre-order Traversal: ";
+    preOrderTraversal(root);
+    cout << endl;
+
+    // Perform post-order traversal
+    cout << "Post-order Traversal: ";
+    postOrderTraversal(root);
+    cout << endl;
+
+    return 0;
+}
